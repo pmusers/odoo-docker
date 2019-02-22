@@ -1,4 +1,4 @@
-FROM pmusers/odoo:12.0-20181225
+FROM pmusers/odoo:12.0-20190221
 
 # Set default user when running the container
 USER root
