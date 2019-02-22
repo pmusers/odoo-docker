@@ -20,7 +20,7 @@ update 12.0
 
 function updateJP(){
   ODOO_VERSION=$1
-  sed -i.bak "s/FROM pmusers/odoo:${ODOO_VERSION}-.*$/FROM pmusers/odoo:${ODOO_VERSION}-$ODOO_RELEASE/" ${ODOO_VERSION}-jp/Dockerfile
+  sed -i.bak "s/FROM pmusers\/odoo:${ODOO_VERSION}-.*$/FROM pmusers\/odoo:${ODOO_VERSION}-$ODOO_RELEASE/" ${ODOO_VERSION}-jp/Dockerfile
   rm ${ODOO_VERSION}-jp/Dockerfile.bak
   git add ${ODOO_VERSION}-jp/Dockerfile
 }
