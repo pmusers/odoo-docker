@@ -18,6 +18,14 @@ update 10.0
 update 11.0
 update 12.0
 
+function updateJP(){
+  ODOO_VERSION=$1
+  sed -i.bak "s/FROM pmusers/odoo:${ODOO_VERSION}-.*$/FROM pmusers/odoo:${ODOO_VERSION}-$ODOO_RELEASE/" ${ODOO_VERSION}-jp/Dockerfile
+  rm ${ODOO_VERSION}-jp/Dockerfile.bak
+  git add ${ODOO_VERSION}-jp/Dockerfile
+}
+updateJP 12.0
+
 git commit -m "[REF] Odoo 10.0-12.0: update to release $ODOO_RELEASE"
 git tag $ODOO_RELEASE
 git push origin $ODOO_RELEASE master
