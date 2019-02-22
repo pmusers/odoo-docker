@@ -20,7 +20,11 @@ update 12.0
 
 function updateJP(){
   ODOO_VERSION=$1
-  sed -i.bak "s/FROM pmusers\/odoo:${ODOO_VERSION}-.*$/FROM pmusers\/odoo:${ODOO_VERSION}-$ODOO_RELEASE/" ${ODOO_VERSION}-jp/Dockerfile
+  sed -i.bak "s/ARG ODOO_RELEASE=.*$/ARG ODOO_RELEASE=$ODOO_RELEASE/" ${ODOO_VERSION}-jp/Dockerfile
+  # for mac, sha1sum should be shasum
+  ODOO_SHA=$(curl -s -o odoo.deb -SL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb && sha1sum odoo.deb | cut -d' ' -f 1)
+  sed -i.bak "s/ARG ODOO_SHA=.*$/ARG ODOO_SHA=$ODOO_SHA/" ${ODOO_VERSION}-jp/Dockerfile
+  rm odoo.deb
   rm ${ODOO_VERSION}-jp/Dockerfile.bak
   git add ${ODOO_VERSION}-jp/Dockerfile
 }

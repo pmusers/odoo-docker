@@ -1,8 +1,5 @@
-FROM debian:stretch
+FROM debian:jessie
 LABEL maintainer="Odoo S.A. <info@odoo.com>"
-
-# Generate locale C.UTF-8 for postgres and general locale data
-ENV LANG C.UTF-8
 
 # Install some deps, lessc and less-plugin-clean-css, and wkhtmltopdf
 RUN set -x; \
@@ -11,30 +8,29 @@ RUN set -x; \
             ca-certificates \
             curl \
             dirmngr \
-            fonts-noto-cjk \
-            gnupg \
-            libssl1.0-dev \
             node-less \
-            python3-pip \
-            python3-pyldap \
-            python3-qrcode \
-            python3-renderpm \
-            python3-setuptools \
-            python3-vobject \
-            python3-watchdog \
+            python-gevent \
+            python-ldap \
+            python-pip \
+            python-qrcode \
+            python-renderpm \
+            python-support \
+            python-vobject \
+            python-watchdog \
             unzip \
-            xz-utils \
-        && curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.stretch_amd64.deb \
-        && echo '7e35a63f9db14f93ec7feeb0fce76b30c08f2057 wkhtmltox.deb' | sha1sum -c - \
-        && dpkg --force-depends -i wkhtmltox.deb\
+        && curl -o wkhtmltox.deb -sSL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.jessie_amd64.deb \
+        && echo '4d104ff338dc2d2083457b3b1e9baab8ddf14202 wkhtmltox.deb' | sha1sum -c - \
+        && dpkg --force-depends -i wkhtmltox.deb \
         && apt-get -y install -f --no-install-recommends \
-        && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
+        && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false npm \
+        && rm -rf /var/lib/apt/lists/* wkhtmltox.deb \
+        && pip install psycogreen==1.0
 
 # install backports fonts-noto-cjk for serif
 RUN set -x; \
-        echo 'deb http://deb.debian.org/debian stretch-backports main' > etc/apt/sources.list.d/backports.list \
+        echo 'deb http://deb.debian.org/debian jessie-backports main' > etc/apt/sources.list.d/backports.list \
         && apt-get update \
-        && apt-get -t stretch-backports install -y fonts-noto-cjk \
+        && apt-get -t jessie-backports install -y fonts-noto-cjk \
         && fc-cache -fv \
         && rm -rf /var/lib/apt/lists/*
 
@@ -53,35 +49,20 @@ RUN cd /tmp && \
 
 # install latest postgresql-client
 RUN set -x; \
-        echo 'deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main' > etc/apt/sources.list.d/pgdg.list \
+        echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' > etc/apt/sources.list.d/pgdg.list \
         && export GNUPGHOME="$(mktemp -d)" \
         && repokey='B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8' \
         && gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "${repokey}" \
         && gpg --armor --export "${repokey}" | apt-key add - \
-        && gpgconf --kill all \
         && rm -rf "$GNUPGHOME" \
         && apt-get update  \
         && apt-get install -y postgresql-client \
         && rm -rf /var/lib/apt/lists/*
 
-# Install rtlcss (on Debian stretch)
-RUN set -x;\
-    echo "deb http://deb.nodesource.com/node_8.x stretch main" > /etc/apt/sources.list.d/nodesource.list \
-    && export GNUPGHOME="$(mktemp -d)" \
-    && repokey='9FD3B784BC1C6FC31A8A0A1C1655A0AB68576280' \
-    && gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "${repokey}" \
-    && gpg --armor --export "${repokey}" | apt-key add - \
-    && gpgconf --kill all \
-    && rm -rf "$GNUPGHOME" \
-    && apt-get update \
-    && apt-get install -y nodejs \
-    && npm install -g rtlcss \
-    && rm -rf /var/lib/apt/lists/*
-
 # Install Odoo
-ENV ODOO_VERSION 12.0
+ENV ODOO_VERSION 10.0
 ARG ODOO_RELEASE=20190221
-ARG ODOO_SHA=ce49fa1405b6284f9fa280bbbef2e28f91aae7bd
+ARG ODOO_SHA=771dc42025f06e3cc0054a53961b81ba8a289f09
 RUN set -x; \
         curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
         && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
@@ -91,7 +72,6 @@ RUN set -x; \
         && rm -rf /var/lib/apt/lists/* odoo.deb
 
 # Copy entrypoint script and Odoo configuration file
-RUN pip3 install num2words xlwt
 COPY ./entrypoint.sh /
 COPY ./odoo.conf /etc/odoo/
 RUN chown odoo /etc/odoo/odoo.conf

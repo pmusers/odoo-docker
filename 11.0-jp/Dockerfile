@@ -64,24 +64,10 @@ RUN set -x; \
         && apt-get install -y postgresql-client \
         && rm -rf /var/lib/apt/lists/*
 
-# Install rtlcss (on Debian stretch)
-RUN set -x;\
-    echo "deb http://deb.nodesource.com/node_8.x stretch main" > /etc/apt/sources.list.d/nodesource.list \
-    && export GNUPGHOME="$(mktemp -d)" \
-    && repokey='9FD3B784BC1C6FC31A8A0A1C1655A0AB68576280' \
-    && gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "${repokey}" \
-    && gpg --armor --export "${repokey}" | apt-key add - \
-    && gpgconf --kill all \
-    && rm -rf "$GNUPGHOME" \
-    && apt-get update \
-    && apt-get install -y nodejs \
-    && npm install -g rtlcss \
-    && rm -rf /var/lib/apt/lists/*
-
 # Install Odoo
-ENV ODOO_VERSION 12.0
+ENV ODOO_VERSION 11.0
 ARG ODOO_RELEASE=20190221
-ARG ODOO_SHA=ce49fa1405b6284f9fa280bbbef2e28f91aae7bd
+ARG ODOO_SHA=d449dc0591cb001b54805a4092dd5e7ad3e21223
 RUN set -x; \
         curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
         && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
