@@ -32,4 +32,5 @@ updateJP 12.0
 
 git commit -m "[REF] Odoo 10.0-12.0: update to release $ODOO_RELEASE"
 git tag $ODOO_RELEASE
-git push origin $ODOO_RELEASE master
+git push origin $ODOO_RELEASE
+git push origin master
