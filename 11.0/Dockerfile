@@ -1,5 +1,4 @@
 FROM debian:stretch
-LABEL maintainer="Odoo S.A. <info@odoo.com>"
 
 # Generate locale C.UTF-8 for postgres and general locale data
 ENV LANG C.UTF-8
@@ -44,8 +43,8 @@ RUN set -x; \
 
 # Install Odoo
 ENV ODOO_VERSION 11.0
-ARG ODOO_RELEASE=20190624
-ARG ODOO_SHA=6c710cf76215aabaa483c81d5ee52ea13c150224
+ARG ODOO_RELEASE=20190625
+ARG ODOO_SHA=b8f16552f7b30df3141235156d134cf33e5c476e
 RUN set -x; \
         curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
         && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \

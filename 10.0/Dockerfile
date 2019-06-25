@@ -1,5 +1,4 @@
 FROM debian:jessie
-LABEL maintainer="Odoo S.A. <info@odoo.com>"
 
 # Install some deps, lessc and less-plugin-clean-css, and wkhtmltopdf
 RUN set -x; \
@@ -39,8 +38,8 @@ RUN set -x; \
 
 # Install Odoo
 ENV ODOO_VERSION 10.0
-ARG ODOO_RELEASE=20190624
-ARG ODOO_SHA=ac6d730ef452c14b8e9159e24bf94612827179b4
+ARG ODOO_RELEASE=20190625
+ARG ODOO_SHA=856ef144539cf4bdc8fec5ae7dc217925344ef7b
 RUN set -x; \
         curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
         && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
