@@ -30,6 +30,8 @@ RUN set -x; \
         && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
 
 # install backports fonts-noto-cjk for serif
+# https://packages.debian.org/stretch/fonts-noto-cjk
+# https://packages.debian.org/stretch-backports/fonts-noto-cjk
 RUN set -x; \
         echo 'deb http://deb.debian.org/debian stretch-backports main' > etc/apt/sources.list.d/backports.list \
         && apt-get update \
@@ -78,8 +80,8 @@ RUN set -x;\
 
 # Install Odoo
 ENV ODOO_VERSION 12.0
-ARG ODOO_RELEASE=20191028
-ARG ODOO_SHA=5a4f659b6329c222cf2b1695523c0a8b5b38b843
+ARG ODOO_RELEASE=20191029
+ARG ODOO_SHA=5952a168923ddee013db14665d2825fba1325821
 RUN set -x; \
         curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
         && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
