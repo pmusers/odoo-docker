@@ -38,8 +38,8 @@ RUN set -x; \
 
 # Install Odoo
 ENV ODOO_VERSION 10.0
-ARG ODOO_RELEASE=20200301
-ARG ODOO_SHA=551ba603da1c4f1fbcd34c1c0597a25d3b8249eb
+ARG ODOO_RELEASE=20200302
+ARG ODOO_SHA=57d8039b50213a84302bb73dd311a65bb3b6f394
 RUN set -x; \
         curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
         && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
