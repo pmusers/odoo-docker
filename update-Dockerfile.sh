@@ -17,6 +17,7 @@ function update(){
 update 10.0
 update 11.0
 update 12.0
+update 13.0
 
 function updateJP(){
   ODOO_VERSION=$1
@@ -29,6 +30,7 @@ function updateJP(){
   git add ${ODOO_VERSION}-jp/Dockerfile
 }
 updateJP 12.0
+updateJP 13.0
 
 git commit -m "[REF] Odoo 10.0-12.0: update to release $ODOO_RELEASE"
 git tag $ODOO_RELEASE
