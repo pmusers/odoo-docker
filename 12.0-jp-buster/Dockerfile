@@ -1,4 +1,4 @@
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
 # Generate locale C.UTF-8 for postgres and general locale data
 ENV LANG C.UTF-8
@@ -15,7 +15,7 @@ RUN set -x; \
             dirmngr \
             fonts-noto-cjk \
             gnupg \
-            libssl1.0-dev \
+            libssl-dev \
             node-less \
             python3-num2words \
             python3-pip \
@@ -36,28 +36,6 @@ RUN set -x; \
         && apt-get install -y --no-install-recommends ./wkhtmltox.deb \
         && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
 
-# install backports fonts-noto-cjk for serif
-# https://packages.debian.org/stretch/fonts-noto-cjk
-# https://packages.debian.org/stretch-backports/fonts-noto-cjk
-RUN set -x; \
-        echo 'deb http://deb.debian.org/debian stretch-backports main' > etc/apt/sources.list.d/backports.list \
-        && apt-get update \
-        && apt-get -t stretch-backports install -y fonts-noto-cjk \
-        && rm -rf /var/lib/apt/lists/*
-
-# Install Noto Serif CJK JP and Noto Sans CJK JP Fonts
-RUN cd /tmp \
-  && mkdir noto \
-  && curl -O -L https://noto-website-2.storage.googleapis.com/pkgs/NotoSerifCJKjp-hinted.zip \
-  && unzip NotoSerifCJKjp-hinted.zip -d ./noto \
-  && curl -O -L https://noto-website-2.storage.googleapis.com/pkgs/NotoSansCJKjp-hinted.zip \
-  && unzip -f NotoSansCJKjp-hinted.zip -d ./noto \
-  && mkdir -p /usr/share/fonts/opentype/noto \
-  && cp ./noto/*.otf /usr/share/fonts/opentype/noto/ \
-  && chmod 644 /usr/share/fonts/opentype/noto/*.otf \
-  && fc-cache -fv \
-  && rm -rf NotoSerifCJKjp-hinted.zip NotoSansCJKjp-hinted.zip ./noto
-
 # install latest postgresql-client
 RUN set -x; \
         echo 'deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
@@ -71,19 +49,9 @@ RUN set -x; \
         && apt-get install -y postgresql-client \
         && rm -rf /var/lib/apt/lists/*
 
-# Install rtlcss (on Debian stretch)
-RUN set -x;\
-    echo "deb http://deb.nodesource.com/node_8.x stretch main" > /etc/apt/sources.list.d/nodesource.list \
-    && export GNUPGHOME="$(mktemp -d)" \
-    && repokey='9FD3B784BC1C6FC31A8A0A1C1655A0AB68576280' \
-    && gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "${repokey}" \
-    && gpg --batch --armor --export "${repokey}" > /etc/apt/trusted.gpg.d/nodejs.gpg.asc \
-    && gpgconf --kill all \
-    && rm -rf "$GNUPGHOME" \
-    && apt-get update \
-    && apt-get install -y nodejs \
-    && npm install -g rtlcss \
-    && rm -rf /var/lib/apt/lists/*
+# Install rtlcss (on Debian buster)
+RUN set -x; \
+    npm install -g rtlcss
 
 # Install Odoo
 ENV ODOO_VERSION 12.0
