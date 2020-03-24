@@ -1,5 +1,4 @@
 FROM debian:jessie
-LABEL maintainer="Odoo S.A. <info@odoo.com>"
 
 # Install some deps, lessc and less-plugin-clean-css, and wkhtmltopdf
 RUN set -x; \
